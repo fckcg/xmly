@@ -1,17 +1,15 @@
-# File: .github/workflows/repo-sync.yml
-name: 喜马拉雅🔄自动同步🔄
+name: 同步上游仓库
 on:
   schedule:
-    - cron: '0 */1 * * *'
-  workflow_dispatch:
+    - cron: '0 8 */7 * *'
   watch:
     types: started
   repository_dispatch:
-    types: repo-sync
+    types: sync-repo
 jobs:
   repo-sync:
     env:
-      PAT: ${{ github.event.client_payload.PAT || secrets.PAT }} #此处PAT需要申请，教程详见：https://www.jianshu.com/p/bb82b3ad1d11
+      PAT: ${{ secrets.PAT }} #此处PAT需要申请，教程详见：https://www.jianshu.com/p/bb82b3ad1d11
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
@@ -19,11 +17,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: 开始喜马拉雅🔄自动同步🔄
+      - name: sync xmly_speed
         uses: repo-sync/github-sync@v2
         if: env.PAT
         with:
-          source_repo: "https://github.com/wuzhi01/xmly.git"
-          source_branch: "main"
+          source_repo: "https://github.com/Zero-S1/xmly_speed.git"
+          source_branch: "master"
           destination_branch: "main"
-          github_token: ${{ github.event.client_payload.PAT || secrets.PAT }}
+          github_token: ${{ secrets.PAT }}
